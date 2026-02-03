@@ -1,4 +1,4 @@
-# 📅 Historical Calendar Engine  
+# Historical Calendar Engine  
 **Gregorian • Julian • Ethiopian (EC)**
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
@@ -25,7 +25,7 @@ This project focuses on **historical accuracy, calendar mathematics, and algorit
 
 ---
 
-##  Motivation — Why This Project?
+##  Motivation, Why This Project?
 
 Calendar systems look simple on the surface, but they hide **centuries of history, math, and edge cases**.
 
