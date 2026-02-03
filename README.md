@@ -67,6 +67,16 @@ The program automatically selects the correct calendar system:
 -  No `datetime`, no third-party libraries
 
 ---
+## 🖥 Sample Output
+
+Here is an example of the calendar the program generates:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fetehadin/historical-calendar-engine.py/main/images/calander_sample.png" alt="Calendar Sample" width="700">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fetehadin/historical-calendar-engine.py/main/images/calander_sample_2.png" alt="Calendar Sample" width="700">
+</p>
 
 ##  Installation & Requirements
 
