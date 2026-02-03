@@ -2,7 +2,6 @@
 **Gregorian • Julian • Ethiopian (EC)**
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
-![Status](https://img.shields.io/badge/Project-Student%20Portfolio-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Stars](https://img.shields.io/badge/Stars-Welcome-lightgrey)
 ![Forks](https://img.shields.io/badge/Forks-Welcome-lightgrey)
@@ -79,7 +78,7 @@ The program automatically selects the correct calendar system:
 ```bash
 git clone https://github.com/your-username/historical-calendar-engine.git
 cd historical-calendar-engine
-
+```
 
 ## 👨‍💻 Author
 
