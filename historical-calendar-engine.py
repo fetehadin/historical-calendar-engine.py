@@ -9,13 +9,13 @@ while True:
             break
         continue
 
-    #Determine calendar mode
-    if year < 1752:
-        year_mode = "julian"
-    elif year == 1752:
-        year_mode = "hybrid"
-    else:
-        year_mode = "gregorian"
+    # #Determine calendar mode
+    # if year < 1752:
+    #     year_mode = "julian"
+    # elif year == 1752:
+    #     year_mode = "hybrid"
+    # else:
+    #     year_mode = "gregorian"
 
     week_days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
@@ -41,22 +41,24 @@ while True:
 
     months = list(mon.keys())
 
-    def check_leap(year, mode):
-        if mode == "julian":
-            return year % 4 == 0
-        else:
-            return (year % 400 == 0) or (year % 4 == 0 and year % 100 != 0)
+    def check_leap(y, m=None, d=None):
+        if y < 1752 or (y == 1752 and (m is None or (m < 9 or (m == 9 and d <= 2)))): return y % 4 == 0
+        else: return (y % 400 == 0) or (y % 4 == 0 and y % 100 != 0)
 
-    def date_to_jdn(y, m, d, mode):
-        if m <= 2:
-            y -= 1
-            m += 12
-        if mode == "gregorian":
+    def date_to_jdn(y, m, d):
+        # Handle transition year 
+        if y < 1752 or (y==1752 and (m<9 or (m==9 and d <= 2))):
+            if m <= 2:
+                y -= 1
+                m += 12
+            return (365 * y + y // 4 + (153 * (m - 3) + 2) // 5 + d + 1721117)
+        else:  # Gregorian formula
+            if m <= 2:
+                y -= 1
+                m += 12
             return (365 * y + y // 4 - y // 100 + y // 400 +
                     (153 * (m - 3) + 2) // 5 + d + 1721119)
-        else:  # julian
-            return (365 * y + y // 4 +
-                    (153 * (m - 3) + 2) // 5 + d + 1721117)
+
 
     def jdn_to_ethiopia(jdn):
         ethiopian_epoch_jdn = 1723856
@@ -75,13 +77,14 @@ while True:
             day_ec = day_of_year - 360
 
         return month_ec, day_ec
+    
 
-    def ec_months_for_gc_month(y, m, length, mode):
+    def ec_months_for_gc_month(y, m, length):
         ec_set = []
         for d in range(1, length + 1):
             if year == 1752 and m == 9 and 3 <= d <= 13:
                 continue
-            jdn = date_to_jdn(y, m, d, mode)
+            jdn = date_to_jdn(y, m, d)
             ec_m, _ = jdn_to_ethiopia(jdn)
             if ec_m not in ec_set:
                 ec_set.append(ec_m)
@@ -90,7 +93,7 @@ while True:
     def weekday_from_jdn(jdn):
         return (jdn + 1) % 7  # 0 = Sunday
 
-    def display(y, m, length, mode):
+    def display(y, m, length):
         print("|  Sun  |  Mon  |  Tue  |  Wed  |  Thu  |  Fri  |  Sat  |")
         print("| ----- | ----- | ----- | ----- | ----- | ----- | ----- |")
 
@@ -98,13 +101,16 @@ while True:
         days = []
         d = 1
         while d <= length:
-            if year == 1752 and m == 9 and d == 3:
-                d = 14  # skip 3–13
+            if year == 1752 and m == 9 and 3<=d<=13:
+                d = 14
+                continue   # skip 3–13
             days.append(d)
             d += 1
-
-        start_jdn = date_to_jdn(y, m, days[0], mode)
-        start_weekday = weekday_from_jdn(start_jdn)
+        if y==1752 and m==9:
+            start_weekday = 2
+        else:
+            start_jdn = date_to_jdn(y, m, days[0])
+            start_weekday = (start_jdn + 1)% 7
 
         count = 0
         for _ in range(start_weekday):
@@ -112,10 +118,10 @@ while True:
             count += 1
 
         for d in days:
-            jdn = date_to_jdn(y, m, d, mode)
+            jdn = date_to_jdn(y, m, d)
             ec_m, ec_d = jdn_to_ethiopia(jdn)
             print(f"| {ec_d:02d} {d:02d} ", end="")
-            count += 1
+            count += 1    
 
             if count == 7:
                 print("|")
@@ -139,19 +145,20 @@ while True:
     for index, gc_month_name in enumerate(months, start=1):
         month_length = mon[gc_month_name]
 
-        if gc_month_name == "February" and check_leap(year, year_mode if year_mode != "hybrid" else "julian"):
+        if gc_month_name == "February" and check_leap(year, 2,1):
             month_length = 29
 
-        month_mode = year_mode
+        # month_mode = year_mode
         if year == 1752 and index >= 9:
             month_mode = "gregorian"
 
-        ec_names = ec_months_for_gc_month(year, index, month_length, month_mode)
+        ec_names = ec_months_for_gc_month(year, index, month_length)
 
         print(f"\n{gc_month_name}     {' - '.join(ec_names)}")
-        display(year, index, month_length, month_mode)
+        display(year, index, month_length)
 
     choice = input("\nDo you want to generate another calendar? (y/n): ")
     if choice.lower() != 'y':
         print("Thanks for visiting!")
         break
+
